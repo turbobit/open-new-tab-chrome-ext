@@ -103,8 +103,9 @@ Link Collector는 웹페이지의 특정 영역에서 링크를 효율적으로 
 
 ### Step 4: 개인정보처리방침 및 지원
 - **개인정보처리방침 URL:** (필수)
-  - 예: https://yoursite.com/privacy (또는 표준 정책 사용)
+  - https://turbobit.github.io/open-new-tab-chrome-ext/docs/privacy
 - **지원 URL:** (선택사항)
+  - https://github.com/turbobit/open-new-tab-chrome-ext/issues
 
 ### Step 5: 콘텐츠 등급 설정
 1. IARC 심사 양식 작성
