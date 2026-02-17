@@ -1,0 +1,18 @@
+<svg viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+  <!-- 배경 -->
+  <rect width="128" height="128" fill="#007bff" rx="20"/>
+
+  <!-- 링크 체인 아이콘 -->
+  <g transform="translate(64, 64)">
+    <!-- 첫 번째 링크 -->
+    <rect x="-28" y="-8" width="24" height="16" rx="8" fill="white" stroke="white" stroke-width="2"/>
+    <!-- 링크 연결 -->
+    <circle cx="-16" cy="0" r="6" fill="#007bff"/>
+    <!-- 두 번째 링크 -->
+    <rect x="-8" y="-8" width="24" height="16" rx="8" fill="white" stroke="white" stroke-width="2"/>
+    <!-- 링크 연결 -->
+    <circle cx="4" cy="0" r="6" fill="#007bff"/>
+    <!-- 세 번째 링크 -->
+    <rect x="4" y="-8" width="24" height="16" rx="8" fill="white" stroke="white" stroke-width="2"/>
+  </g>
+</svg>
