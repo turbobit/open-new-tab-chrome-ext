@@ -1,0 +1,102 @@
+{
+  "extName": {
+    "message": "Link Collector"
+  },
+  "extDescription": {
+    "message": "Press the Z key to select a webpage area and open all links in that area at once."
+  },
+  "actionTitle": {
+    "message": "Link Collector Settings"
+  },
+  "pageTitle": {
+    "message": "Link Collector Settings"
+  },
+  "settingsTitle": {
+    "message": "⚙️ Settings"
+  },
+  "labelHotkey": {
+    "message": "Hotkey"
+  },
+  "hotkeyInputTitle": {
+    "message": "Enter 1 character only"
+  },
+  "hotkeyHelp": {
+    "message": "Key to start area selection"
+  },
+  "labelOpenMode": {
+    "message": "Link Open Mode"
+  },
+  "openModeNewTab": {
+    "message": "Open in new tab (Focus)"
+  },
+  "openModeBackground": {
+    "message": "Open in new tab (Background)"
+  },
+  "openModeNewWindow": {
+    "message": "Open in new window"
+  },
+  "labelMaxTabs": {
+    "message": "Maximum tabs to open at once"
+  },
+  "maxTabsHelp": {
+    "message": "Enter a number between 1 and 50"
+  },
+  "labelBoxColor": {
+    "message": "Selection box color"
+  },
+  "labelSameDomain": {
+    "message": "Open links from current domain only"
+  },
+  "sameDomainHelp": {
+    "message": "Links from other domains will be excluded"
+  },
+  "labelConfirmDialog": {
+    "message": "Show confirmation dialog before opening links"
+  },
+  "confirmDialogHelp": {
+    "message": "Links will open immediately when off"
+  },
+  "saveButton": {
+    "message": "💾 Save"
+  },
+  "savedStatus": {
+    "message": "Saved!"
+  },
+  "linkCount": {
+    "message": "$COUNT$ links",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "confirmMessage": {
+    "message": "Open $COUNT$ links in $MODE$?",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "10"
+      },
+      "mode": {
+        "content": "$2",
+        "example": "new tab"
+      }
+    }
+  },
+  "confirmOpen": {
+    "message": "Open"
+  },
+  "confirmCancel": {
+    "message": "Cancel"
+  },
+  "openModeNewTabShort": {
+    "message": "New tab"
+  },
+  "openModeBackgroundTabShort": {
+    "message": "Background tab"
+  },
+  "openModeNewWindowShort": {
+    "message": "New window"
+  }
+}

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Link Collector 설정</title>
+  <title data-i18n="pageTitle">Link Collector 설정</title>
   <style>
     * {
       margin: 0;
@@ -152,40 +152,40 @@
   </style>
 </head>
 <body>
-  <h1>⚙️ 설정</h1>
+  <h1 data-i18n="settingsTitle">⚙️ 설정</h1>
 
   <div class="setting-group">
-    <label for="hotkey">단축키</label>
-    <input type="text" id="hotkey" maxlength="1" placeholder="z" title="1글자만 입력하세요">
-    <div class="help-text">영역 선택을 시작할 키</div>
+    <label for="hotkey" data-i18n="labelHotkey">단축키</label>
+    <input type="text" id="hotkey" maxlength="1" placeholder="z" data-i18n-title="hotkeyInputTitle" title="1글자만 입력하세요">
+    <div class="help-text" data-i18n="hotkeyHelp">영역 선택을 시작할 키</div>
   </div>
 
   <div class="setting-group">
-    <label>링크 열기 방식</label>
+    <label data-i18n="labelOpenMode">링크 열기 방식</label>
     <div class="radio-group">
       <div class="radio-option">
         <input type="radio" id="openMode-new-tab" name="openMode" value="new-tab">
-        <label for="openMode-new-tab">새 탭에서 열기 (포커스)</label>
+        <label for="openMode-new-tab" data-i18n="openModeNewTab">새 탭에서 열기 (포커스)</label>
       </div>
       <div class="radio-option">
         <input type="radio" id="openMode-background-tab" name="openMode" value="background-tab">
-        <label for="openMode-background-tab">새 탭에서 열기 (백그라운드)</label>
+        <label for="openMode-background-tab" data-i18n="openModeBackground">새 탭에서 열기 (백그라운드)</label>
       </div>
       <div class="radio-option">
         <input type="radio" id="openMode-new-window" name="openMode" value="new-window">
-        <label for="openMode-new-window">새 창에서 열기</label>
+        <label for="openMode-new-window" data-i18n="openModeNewWindow">새 창에서 열기</label>
       </div>
     </div>
   </div>
 
   <div class="setting-group">
-    <label for="maxTabs">한 번에 열 최대 탭 수</label>
+    <label for="maxTabs" data-i18n="labelMaxTabs">한 번에 열 최대 탭 수</label>
     <input type="number" id="maxTabs" min="1" max="50" value="10">
-    <div class="help-text">1~50 사이의 숫자를 입력하세요</div>
+    <div class="help-text" data-i18n="maxTabsHelp">1~50 사이의 숫자를 입력하세요</div>
   </div>
 
   <div class="setting-group">
-    <label for="boxColor">선택 박스 색상</label>
+    <label for="boxColor" data-i18n="labelBoxColor">선택 박스 색상</label>
     <div style="display: flex; align-items: center;">
       <input type="color" id="boxColor" value="#007bff" style="width: 60px; padding: 4px;">
       <span class="color-preview" id="colorPreview"></span>
@@ -195,21 +195,21 @@
   <div class="setting-group">
     <div class="checkbox-group">
       <input type="checkbox" id="sameDomainOnly">
-      <label for="sameDomainOnly">현재 도메인의 링크만 열기</label>
+      <label for="sameDomainOnly" data-i18n="labelSameDomain">현재 도메인의 링크만 열기</label>
     </div>
-    <div class="help-text" style="margin-top: 8px;">다른 도메인의 링크는 제외됩니다</div>
+    <div class="help-text" style="margin-top: 8px;" data-i18n="sameDomainHelp">다른 도메인의 링크는 제외됩니다</div>
   </div>
 
   <div class="setting-group">
     <div class="checkbox-group">
       <input type="checkbox" id="showConfirmDialog">
-      <label for="showConfirmDialog">링크 열기 전 확인 다이얼로그 표시</label>
+      <label for="showConfirmDialog" data-i18n="labelConfirmDialog">링크 열기 전 확인 다이얼로그 표시</label>
     </div>
-    <div class="help-text" style="margin-top: 8px;">끄면 바로 링크가 열립니다</div>
+    <div class="help-text" style="margin-top: 8px;" data-i18n="confirmDialogHelp">끄면 바로 링크가 열립니다</div>
   </div>
 
-  <button id="saveBtn">💾 저장</button>
-  <div class="status" id="status">저장되었습니다!</div>
+  <button id="saveBtn" data-i18n="saveButton">💾 저장</button>
+  <div class="status" id="status" data-i18n="savedStatus">저장되었습니다!</div>
 
   <script src="popup.js"></script>
 </body>

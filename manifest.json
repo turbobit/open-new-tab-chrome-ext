@@ -1,8 +1,9 @@
 {
   "manifest_version": 3,
-  "name": "Link Collector",
+  "default_locale": "ko",
+  "name": "__MSG_extName__",
   "version": "1.0",
-  "description": "Z 키로 웹페이지 영역을 선택하여 해당 영역의 모든 링크를 한번에 열어보세요. 단축키, 열기 방식, 색상 등을 자유롭게 커스터마이징할 수 있습니다.",
+  "description": "__MSG_extDescription__",
   "permissions": [
     "tabs",
     "storage"
@@ -17,7 +18,7 @@
     }
   ],
   "action": {
-    "default_title": "Link Collector 설정",
+    "default_title": "__MSG_actionTitle__",
     "default_popup": "popup.html",
     "default_icons": {
       "16": "icon-16x16.png",

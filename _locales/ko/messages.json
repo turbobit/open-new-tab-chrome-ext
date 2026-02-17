@@ -1,0 +1,102 @@
+{
+  "extName": {
+    "message": "Link Collector"
+  },
+  "extDescription": {
+    "message": "Z 키로 웹페이지 영역을 선택하여 해당 영역의 모든 링크를 한번에 열어보세요."
+  },
+  "actionTitle": {
+    "message": "Link Collector 설정"
+  },
+  "pageTitle": {
+    "message": "Link Collector 설정"
+  },
+  "settingsTitle": {
+    "message": "⚙️ 설정"
+  },
+  "labelHotkey": {
+    "message": "단축키"
+  },
+  "hotkeyInputTitle": {
+    "message": "1글자만 입력하세요"
+  },
+  "hotkeyHelp": {
+    "message": "영역 선택을 시작할 키"
+  },
+  "labelOpenMode": {
+    "message": "링크 열기 방식"
+  },
+  "openModeNewTab": {
+    "message": "새 탭에서 열기 (포커스)"
+  },
+  "openModeBackground": {
+    "message": "새 탭에서 열기 (백그라운드)"
+  },
+  "openModeNewWindow": {
+    "message": "새 창에서 열기"
+  },
+  "labelMaxTabs": {
+    "message": "한 번에 열 최대 탭 수"
+  },
+  "maxTabsHelp": {
+    "message": "1~50 사이의 숫자를 입력하세요"
+  },
+  "labelBoxColor": {
+    "message": "선택 박스 색상"
+  },
+  "labelSameDomain": {
+    "message": "현재 도메인의 링크만 열기"
+  },
+  "sameDomainHelp": {
+    "message": "다른 도메인의 링크는 제외됩니다"
+  },
+  "labelConfirmDialog": {
+    "message": "링크 열기 전 확인 다이얼로그 표시"
+  },
+  "confirmDialogHelp": {
+    "message": "끄면 바로 링크가 열립니다"
+  },
+  "saveButton": {
+    "message": "💾 저장"
+  },
+  "savedStatus": {
+    "message": "저장되었습니다!"
+  },
+  "linkCount": {
+    "message": "$COUNT$개",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "confirmMessage": {
+    "message": "링크 $COUNT$개를 $MODE$으로 열까요?",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "10"
+      },
+      "mode": {
+        "content": "$2",
+        "example": "새 탭"
+      }
+    }
+  },
+  "confirmOpen": {
+    "message": "열기"
+  },
+  "confirmCancel": {
+    "message": "취소"
+  },
+  "openModeNewTabShort": {
+    "message": "새 탭"
+  },
+  "openModeBackgroundTabShort": {
+    "message": "백그라운드 탭"
+  },
+  "openModeNewWindowShort": {
+    "message": "새 창"
+  }
+}

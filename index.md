@@ -27,6 +27,7 @@ title: Link Collector
 - **색상 커스터마이징**: 선택 박스 색상 자유롭게 변경
 - **도메인 필터**: 현재 도메인의 링크만 선택 가능
 - **확인 다이얼로그**: 링크 열기 전 확인 옵션
+- **다국어 지원**: 한국어, 영어, 일본어 (언어 기여 환영!)
 
 ---
 
@@ -69,9 +70,14 @@ cd open-new-tab-chrome-ext
 
 ## 📚 더 알아보기
 
+**한국어 (Korean)**
 - [📖 전체 가이드](./docs/README.md)
 - [🔒 개인정보처리방침](./docs/privacy.md)
 - [📋 배포 가이드](./docs/deployment.md)
+
+**영어 (English)**
+- [📖 Full Guide](./docs/README.en.md)
+
 - [🐛 GitHub Issues](https://github.com/turbobit/open-new-tab-chrome-ext/issues)
 
 ---
@@ -85,15 +91,18 @@ cd open-new-tab-chrome-ext
 | **지원 브라우저** | Chrome 100+ |
 | **용량** | ~8KB |
 | **권한** | tabs, storage |
+| **지원 언어** | 한국어, 영어, 일본어 |
+| **Manifest** | V3 (최신) |
 
 ---
 
 ## 🤝 기여
 
-버그 신고 및 기능 제안을 환영합니다!
+버그 신고, 기능 제안, 그리고 **새로운 언어 번역**을 환영합니다!
 
 - [GitHub Issues 열기](https://github.com/turbobit/open-new-tab-chrome-ext/issues)
 - [Pull Request 제출](https://github.com/turbobit/open-new-tab-chrome-ext/pulls)
+- [📝 기여 가이드](https://github.com/turbobit/open-new-tab-chrome-ext/blob/main/CONTRIBUTING.md) - 다국어 기여 방법
 
 ---
 

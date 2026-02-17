@@ -19,8 +19,32 @@ const showConfirmDialogCheckbox = document.getElementById('showConfirmDialog');
 const saveBtn = document.getElementById('saveBtn');
 const statusDiv = document.getElementById('status');
 
+// i18n 초기화
+function initI18n() {
+  // textContent i18n
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const msg = chrome.i18n.getMessage(el.dataset.i18n);
+    if (msg) el.textContent = msg;
+  });
+
+  // title i18n
+  document.querySelectorAll('[data-i18n-title]').forEach(el => {
+    const msg = chrome.i18n.getMessage(el.dataset.i18nTitle);
+    if (msg) el.title = msg;
+  });
+
+  // placeholder i18n
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const msg = chrome.i18n.getMessage(el.dataset.i18nPlaceholder);
+    if (msg) el.placeholder = msg;
+  });
+}
+
 // 팝업 로드 시 현재 설정 불러오기
-document.addEventListener('DOMContentLoaded', loadSettings);
+document.addEventListener('DOMContentLoaded', () => {
+  initI18n();
+  loadSettings();
+});
 
 // 색상 입력 실시간 반영
 boxColorInput.addEventListener('input', (e) => {

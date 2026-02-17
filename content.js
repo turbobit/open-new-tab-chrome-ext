@@ -148,7 +148,7 @@ function updateLinkCountBadge(x, y, width, height) {
   const count = linksArray.length;
 
   if (count > 0) {
-    linkCountBadge.textContent = `${count}개`;
+    linkCountBadge.textContent = chrome.i18n.getMessage('linkCount', [count.toString()]);
     linkCountBadge.style.display = 'block';
     // 박스 우측 하단에 위치
     linkCountBadge.style.left = `${x + width - 50}px`;
@@ -227,7 +227,7 @@ function showConfirmDialog(linksArray) {
     color: #333;
     font-weight: 500;
   `;
-  message.textContent = `링크 ${linksArray.length}개를 ${getOpenModeLabel(settings.openMode)}으로 열까요?`;
+  message.textContent = chrome.i18n.getMessage('confirmMessage', [linksArray.length.toString(), getOpenModeLabel(settings.openMode)]);
 
   const buttonGroup = document.createElement('div');
   buttonGroup.style.cssText = `
@@ -248,7 +248,7 @@ function showConfirmDialog(linksArray) {
     cursor: pointer;
     transition: background 0.2s;
   `;
-  confirmBtn.textContent = '열기';
+  confirmBtn.textContent = chrome.i18n.getMessage('confirmOpen');
   confirmBtn.onmouseover = () => confirmBtn.style.background = '#0056b3';
   confirmBtn.onmouseout = () => confirmBtn.style.background = '#007bff';
   confirmBtn.onclick = () => {
@@ -268,7 +268,7 @@ function showConfirmDialog(linksArray) {
     cursor: pointer;
     transition: background 0.2s;
   `;
-  cancelBtn.textContent = '취소';
+  cancelBtn.textContent = chrome.i18n.getMessage('confirmCancel');
   cancelBtn.onmouseover = () => cancelBtn.style.background = '#d0d0d0';
   cancelBtn.onmouseout = () => cancelBtn.style.background = '#e0e0e0';
   cancelBtn.onclick = closeDialog;
@@ -301,12 +301,12 @@ function showConfirmDialog(linksArray) {
 }
 
 function getOpenModeLabel(mode) {
-  const modeLabels = {
-    'new-tab': '새 탭',
-    'background-tab': '백그라운드 탭',
-    'new-window': '새 창'
+  const keys = {
+    'new-tab': 'openModeNewTabShort',
+    'background-tab': 'openModeBackgroundTabShort',
+    'new-window': 'openModeNewWindowShort'
   };
-  return modeLabels[mode] || '새 탭';
+  return chrome.i18n.getMessage(keys[mode] || 'openModeNewTabShort');
 }
 
 // ====== 링크 수집 ======
