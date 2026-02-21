@@ -10,18 +10,25 @@
     "tabs",
     "scripting"
   ],
+  "host_permissions": [
+    "http://*/*",
+    "https://*/*"
+  ],
   "background": {
     "service_worker": "background.js"
   },
   "action": {
     "default_title": "__MSG_actionTitle__",
-    "default_popup": "popup.html",
     "default_icons": {
       "16": "icon-16x16.png",
       "32": "icon-32x32.png",
       "48": "icon-48x48.png",
       "128": "icon-128x128.png"
     }
+  },
+  "options_ui": {
+    "page": "popup.html",
+    "open_in_tab": true
   },
   "icons": {
     "16": "icon-16x16.png",

@@ -1,23 +1,66 @@
-// ====== 설정 변수 ======
-let settings = {
-  hotkey: 'z',
-  openMode: 'new-tab',
-  maxTabs: 10,
-  boxColor: '#007bff',
-  sameDomainOnly: false,
-  showConfirmDialog: false
-};
+(() => {
+  if (window.__LINK_COLLECTOR_LOADED__) {
+    return;
+  }
+  window.__LINK_COLLECTOR_LOADED__ = true;
 
-// ====== 상태 변수 ======
-let isSelecting = false;
-let startX = 0;
-let startY = 0;
-let endX = 0;
-let endY = 0;
-let selectionBox = null;
-let linkCountBadge = null;
-let lastCollectTime = 0;
-const THROTTLE_MS = 100;
+  const FALLBACK_MESSAGES = {
+    linkCount: ([count = '0']) => `${count}개`,
+    confirmMessage: ([count = '0', mode = '새 탭']) => `링크 ${count}개를 ${mode}으로 열까요?`,
+    confirmOpen: () => '열기',
+    confirmCancel: () => '취소',
+    openModeNewTabShort: () => '새 탭',
+    openModeBackgroundTabShort: () => '백그라운드 탭',
+    openModeNewWindowShort: () => '새 창'
+  };
+
+  function getLocalizedMessage(key, substitutions = []) {
+    if (typeof chrome !== 'undefined' && chrome.i18n && typeof chrome.i18n.getMessage === 'function') {
+      try {
+        const message = chrome.i18n.getMessage(key, substitutions);
+        if (message) {
+          return message;
+        }
+      } catch (error) {
+        console.warn('i18n 메시지 조회 실패', key, error);
+      }
+    }
+    const fallback = FALLBACK_MESSAGES[key];
+    return fallback ? fallback(substitutions) : substitutions[0] || key;
+  }
+
+  const CURRENT_ORIGIN = window.location.origin;
+
+  function registerCurrentOrigin() {
+    if (!CURRENT_ORIGIN) {
+      return;
+    }
+    if (typeof chrome === 'undefined' || !chrome.runtime || !chrome.runtime.sendMessage) {
+      return;
+    }
+    chrome.runtime.sendMessage({ type: 'REGISTER_ORIGIN', origin: CURRENT_ORIGIN });
+  }
+
+  // ====== 설정 변수 ======
+  let settings = {
+    hotkey: 'z',
+    openMode: 'new-tab',
+    maxTabs: 10,
+    boxColor: '#007bff',
+    sameDomainOnly: false,
+    showConfirmDialog: false
+  };
+
+  // ====== 상태 변수 ======
+  let isSelecting = false;
+  let startX = 0;
+  let startY = 0;
+  let endX = 0;
+  let endY = 0;
+  let selectionBox = null;
+  let linkCountBadge = null;
+  let lastCollectTime = 0;
+  const THROTTLE_MS = 100;
 
 // ====== 초기화 ======
 document.addEventListener('DOMContentLoaded', initializeSettings);
@@ -69,6 +112,8 @@ document.addEventListener('keyup', (e) => {
 // ====== 선택 시작 ======
 function startSelection() {
   if (isSelecting) return;
+
+  registerCurrentOrigin();
 
   isSelecting = true;
 
@@ -148,7 +193,7 @@ function updateLinkCountBadge(x, y, width, height) {
   const count = linksArray.length;
 
   if (count > 0) {
-    linkCountBadge.textContent = chrome.i18n.getMessage('linkCount', [count.toString()]);
+    linkCountBadge.textContent = getLocalizedMessage('linkCount', [count.toString()]);
     linkCountBadge.style.display = 'block';
     // 박스 우측 하단에 위치
     linkCountBadge.style.left = `${x + width - 50}px`;
@@ -227,7 +272,7 @@ function showConfirmDialog(linksArray) {
     color: #333;
     font-weight: 500;
   `;
-  message.textContent = chrome.i18n.getMessage('confirmMessage', [linksArray.length.toString(), getOpenModeLabel(settings.openMode)]);
+  message.textContent = getLocalizedMessage('confirmMessage', [linksArray.length.toString(), getOpenModeLabel(settings.openMode)]);
 
   const buttonGroup = document.createElement('div');
   buttonGroup.style.cssText = `
@@ -248,7 +293,7 @@ function showConfirmDialog(linksArray) {
     cursor: pointer;
     transition: background 0.2s;
   `;
-  confirmBtn.textContent = chrome.i18n.getMessage('confirmOpen');
+  confirmBtn.textContent = getLocalizedMessage('confirmOpen');
   confirmBtn.onmouseover = () => confirmBtn.style.background = '#0056b3';
   confirmBtn.onmouseout = () => confirmBtn.style.background = '#007bff';
   confirmBtn.onclick = () => {
@@ -268,7 +313,7 @@ function showConfirmDialog(linksArray) {
     cursor: pointer;
     transition: background 0.2s;
   `;
-  cancelBtn.textContent = chrome.i18n.getMessage('confirmCancel');
+  cancelBtn.textContent = getLocalizedMessage('confirmCancel');
   cancelBtn.onmouseover = () => cancelBtn.style.background = '#d0d0d0';
   cancelBtn.onmouseout = () => cancelBtn.style.background = '#e0e0e0';
   cancelBtn.onclick = closeDialog;
@@ -306,7 +351,7 @@ function getOpenModeLabel(mode) {
     'background-tab': 'openModeBackgroundTabShort',
     'new-window': 'openModeNewWindowShort'
   };
-  return chrome.i18n.getMessage(keys[mode] || 'openModeNewTabShort');
+  return getLocalizedMessage(keys[mode] || 'openModeNewTabShort');
 }
 
 // ====== 링크 수집 ======
@@ -388,3 +433,5 @@ function hexToRgb(hex) {
     b: parseInt(result[3], 16)
   } : { r: 0, g: 123, b: 255 };
 }
+
+})();

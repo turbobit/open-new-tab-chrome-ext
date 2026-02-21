@@ -1,7 +1,7 @@
 const ALLOWED_ORIGINS_KEY = 'allowedOrigins';
-const BADGE_TEXT_PROMPT = '클릭';
+const BADGE_TEXT_ALLOWED = 'On';
 const BADGE_TEXT_EXECUTED = '실행';
-const BADGE_COLOR_PROMPT = '#10b981';
+const BADGE_COLOR_ALLOWED = '#10b981';
 const BADGE_COLOR_EXECUTED = '#2563eb';
 
 let badgeTimers = new Map();
@@ -27,6 +27,28 @@ function clearBadge(tabId) {
   setBadge(tabId, '', '#6b7280');
 }
 
+function ensureContentScriptInjected(tabId, origin) {
+  if (typeof tabId !== 'number' || !origin) {
+    return;
+  }
+
+  const pattern = getOriginPattern(origin);
+  chrome.permissions.contains({ origins: [pattern] }, (hasPermission) => {
+    if (!hasPermission) {
+      return;
+    }
+
+    chrome.scripting
+      .executeScript({
+        target: { tabId },
+        files: ['content.js']
+      })
+      .catch((error) => {
+        console.error('content.js 삽입 실패', error);
+      });
+  });
+}
+
 function refreshBadge(tabId, origin) {
   if (!origin) {
     clearBadge(tabId);
@@ -36,26 +58,69 @@ function refreshBadge(tabId, origin) {
   chrome.storage.sync.get({ [ALLOWED_ORIGINS_KEY]: [] }, (stored) => {
     const allowedOrigins = stored[ALLOWED_ORIGINS_KEY];
     if (allowedOrigins.includes(origin)) {
-      setBadge(tabId, BADGE_TEXT_PROMPT, BADGE_COLOR_PROMPT);
+      setBadge(tabId, BADGE_TEXT_ALLOWED, BADGE_COLOR_ALLOWED);
+      ensureContentScriptInjected(tabId, origin);
     } else {
       clearBadge(tabId);
     }
   });
 }
 
-function markOriginAllowed(origin, callback) {
-  chrome.storage.sync.get({ [ALLOWED_ORIGINS_KEY]: [] }, (stored) => {
-    const allowedOrigins = stored[ALLOWED_ORIGINS_KEY];
-    if (allowedOrigins.includes(origin)) {
-      callback(allowedOrigins);
+function getOriginPattern(origin) {
+  return `${origin}/*`;
+}
+
+function ensureOriginPermission(origin, onGranted, onDenied) {
+  if (!origin) {
+    onDenied?.();
+    return;
+  }
+
+  const pattern = getOriginPattern(origin);
+  chrome.permissions.contains({ origins: [pattern] }, (hasPermission) => {
+    if (hasPermission) {
+      onGranted();
       return;
     }
 
-    const nextOrigins = [...allowedOrigins, origin];
-    chrome.storage.sync.set({ [ALLOWED_ORIGINS_KEY]: nextOrigins }, () => {
-      callback(nextOrigins);
+    chrome.permissions.request({ origins: [pattern] }, (granted) => {
+      if (granted) {
+        onGranted();
+      } else {
+        onDenied?.();
+      }
     });
   });
+}
+
+function markOriginAllowed(origin, callback) {
+  if (!origin) {
+    callback([]);
+    return;
+  }
+
+  ensureOriginPermission(
+    origin,
+    () => {
+      chrome.storage.sync.get({ [ALLOWED_ORIGINS_KEY]: [] }, (stored) => {
+        const allowedOrigins = stored[ALLOWED_ORIGINS_KEY];
+        if (allowedOrigins.includes(origin)) {
+          callback(allowedOrigins);
+          return;
+        }
+
+        const nextOrigins = [...allowedOrigins, origin];
+        chrome.storage.sync.set({ [ALLOWED_ORIGINS_KEY]: nextOrigins }, () => {
+          callback(nextOrigins);
+        });
+      });
+    },
+    () => {
+      if (callback) {
+        callback([]);
+      }
+    }
+  );
 }
 
 function showExecutionBadge(tabId, origin) {
@@ -106,6 +171,22 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     sendResponse({ success: true, count: linksToOpen.length });
     return true;
   }
+
+  if (request.type === 'REGISTER_ORIGIN') {
+    const { origin } = request;
+    if (!origin) {
+      sendResponse({ success: false });
+      return false;
+    }
+
+    markOriginAllowed(origin, () => {
+      if (sender?.tab?.id) {
+        refreshBadge(sender.tab.id, origin);
+      }
+      sendResponse({ success: true });
+    });
+    return true;
+  }
 });
 
 chrome.action.onClicked.addListener((tab) => {
@@ -121,12 +202,7 @@ chrome.action.onClicked.addListener((tab) => {
 
   markOriginAllowed(origin, () => {
     showExecutionBadge(tab.id, origin);
-    chrome.scripting.executeScript({
-      target: { tabId: tab.id },
-      files: ['content.js']
-    }).catch((error) => {
-      console.error('content.js 삽입 실패', error);
-    });
+    ensureContentScriptInjected(tab.id, origin);
   });
 });
 
