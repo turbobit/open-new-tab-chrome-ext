@@ -27,12 +27,11 @@ open-new-tab-chrome-ext/
 
 ### 3. 확장 프로그램 패킹 (.zip)
 ```bash
-# Windows PowerShell
-Compress-Archive -Path .\* -DestinationPath .\link-collector.zip
+# 권장: npm 빌드로 릴리즈 ZIP 생성
+npm run build
 
-# Linux/Mac
-cd /path/to/your/project
-zip -r link-collector.zip . -x "*.git*" ".gitignore" "node_modules/*"
+# 생성 파일
+# dist/link-collector.zip
 ```
 
 ---

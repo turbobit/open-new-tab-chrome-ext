@@ -100,8 +100,10 @@ open-new-tab-chrome-ext/
 ├── README.md                  # 이 파일
 ├── PRIVACY_POLICY.md          # 개인정보처리방침
 ├── STORE_DEPLOYMENT.md        # 배포 가이드
+├── package.json               # npm 빌드 스크립트
+├── scripts/build-release.mjs  # 릴리즈 패키지 생성
 ├── .gitignore                 # Git 설정
-└── create-release.py          # 배포 패키지 생성
+└── create-release.py          # (레거시) 배포 패키지 생성
 ```
 
 ### 기술 스택
@@ -168,11 +170,8 @@ cd open-new-tab-chrome-ext
 
 ### 배포 패키지 생성
 ```bash
-# Python 사용 (권장)
-python3 create-release.py
-
-# 또는 PowerShell (Windows)
-powershell -ExecutionPolicy Bypass -File create-release.ps1
+# npm 빌드 (권장)
+npm run build
 ```
 
 ### Chrome Web Store 배포
