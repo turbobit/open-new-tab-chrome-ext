@@ -2,7 +2,7 @@
 
 웹페이지의 특정 영역에서 링크를 효율적으로 수집하고 한 번에 열 수 있는 Chrome 확장 프로그램입니다.
 
-![Version](https://img.shields.io/badge/version-1.0-blue)
+![Version](https://img.shields.io/badge/version-1.0.1-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Chrome](https://img.shields.io/badge/chrome-manifest%20v3-brightgreen)
 ![Language](https://img.shields.io/badge/language-JavaScript-yellow)
@@ -253,7 +253,7 @@ git push origin feature/your-feature
 
 ## 📊 버전 정보
 
-### v1.0 (현재)
+### v1.0.1 (현재)
 - ✅ 기본 링크 수집 기능
 - ✅ 단축키 커스터마이징
 - ✅ 설정 팝업 UI
