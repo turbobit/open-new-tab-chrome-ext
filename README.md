@@ -174,6 +174,17 @@ cd open-new-tab-chrome-ext
 npm run build
 ```
 
+### GitHub Actions 자동 릴리즈
+- 워크플로 파일: `.github/workflows/release.yml`
+- 트리거: Git 태그 푸시 시 자동 실행
+- 동작: `npm run build` 실행 후 `dist/link-collector.zip`을 GitHub Release에 자동 첨부
+
+```bash
+# 예시: 버전 태그 생성 및 푸시
+git tag v1.0.1
+git push origin v1.0.1
+```
+
 ### Chrome Web Store 배포
 자세한 가이드는 [STORE_DEPLOYMENT.md](./STORE_DEPLOYMENT.md) 참조
 
