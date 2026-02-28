@@ -3,8 +3,10 @@ const BADGE_TEXT_ALLOWED = 'On';
 const BADGE_TEXT_EXECUTED = '실행';
 const BADGE_COLOR_ALLOWED = '#10b981';
 const BADGE_COLOR_EXECUTED = '#2563eb';
+const HOST_PERMISSION_PATTERN = ['*://*/*'];
 
 let badgeTimers = new Map();
+let hostPermissionCache = null; // 권한 상태 캐싱
 
 function getOrigin(url) {
   try {
@@ -13,6 +15,19 @@ function getOrigin(url) {
     console.warn('origin을 만들 수 없음:', url, error);
     return null;
   }
+}
+
+function checkHostPermission(callback) {
+  // 캐시된 권한 상태 사용 (성능 최적화)
+  if (hostPermissionCache !== null) {
+    callback(hostPermissionCache);
+    return;
+  }
+
+  chrome.permissions.contains({ origins: HOST_PERMISSION_PATTERN }, (hasPermission) => {
+    hostPermissionCache = hasPermission;
+    callback(hasPermission);
+  });
 }
 
 function setBadge(tabId, text, color) {
@@ -32,15 +47,15 @@ function ensureContentScriptInjected(tabId, origin) {
     return;
   }
 
-  // 전체 호스트 권한 확인
-  chrome.permissions.contains({ origins: ['*://*/*'] }, (hasPermission) => {
-    if (!hasPermission) {
-      return;
-    }
+  // 특정 페이지는 scripting이 불가능하므로 체크
+  if (!canScriptPage(origin)) {
+    console.debug('scripting 불가능한 페이지:', origin);
+    return;
+  }
 
-    // 특정 페이지는 scripting이 불가능하므로 체크
-    if (!canScriptPage(origin)) {
-      console.debug('scripting 불가능한 페이지:', origin);
+  // 권한 확인 후 content script 주입
+  checkHostPermission((hasPermission) => {
+    if (!hasPermission) {
       return;
     }
 
@@ -88,7 +103,7 @@ function refreshBadge(tabId, origin) {
       setBadge(tabId, BADGE_TEXT_ALLOWED, BADGE_COLOR_ALLOWED);
 
       // 권한이 있으면 content script 주입
-      chrome.permissions.contains({ origins: ['*://*/*'] }, (hasPermission) => {
+      checkHostPermission((hasPermission) => {
         if (hasPermission) {
           ensureContentScriptInjected(tabId, origin);
         }
@@ -111,15 +126,16 @@ function ensureOriginPermission(origin, onGranted, onDenied) {
   }
 
   // Manifest V3에서는 optional_host_permissions에 선언된 패턴과 정확히 일치해야 함
-  chrome.permissions.contains({ origins: ['*://*/*'] }, (hasPermission) => {
+  checkHostPermission((hasPermission) => {
     if (hasPermission) {
       onGranted();
       return;
     }
 
     // 전체 호스트 권한 요청 (한 번만 필요)
-    chrome.permissions.request({ origins: ['*://*/*'] }, (granted) => {
+    chrome.permissions.request({ origins: HOST_PERMISSION_PATTERN }, (granted) => {
       if (granted) {
+        hostPermissionCache = null; // 캐시 초기화
         onGranted();
       } else {
         onDenied?.({ reason: 'user_denied', origin });
@@ -267,6 +283,15 @@ chrome.storage.onChanged.addListener((changes, areaName) => {
       }
     });
   });
+});
+
+// 권한 변경 시 캐시 초기화
+chrome.permissions.onAdded.addListener(() => {
+  hostPermissionCache = null;
+});
+
+chrome.permissions.onRemoved.addListener(() => {
+  hostPermissionCache = null;
 });
 
 chrome.runtime.onInstalled.addListener(() => {
