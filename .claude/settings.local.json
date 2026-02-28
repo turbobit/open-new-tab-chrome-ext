@@ -2,7 +2,10 @@
   "permissions": {
     "allow": [
       "Bash(python3:*)",
-      "Bash(bash create-release.sh)"
+      "Bash(bash create-release.sh)",
+      "Bash(for perm in storage tabs scripting windows)",
+      "Bash(do echo \"[$perm]\")",
+      "Bash(done)"
     ]
   }
 }

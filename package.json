@@ -1,6 +1,6 @@
 {
   "name": "open-new-tab-chrome-ext",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "private": true,
   "description": "Build scripts for Link Collector Chrome extension release packaging",
   "scripts": {

@@ -141,6 +141,12 @@ window.addEventListener('load', initializeSettings);
 initializeSettings();
 
 function initializeSettings() {
+  // chrome.storage 사용 가능 여부 확인
+  if (typeof chrome === 'undefined' || !chrome.storage || !chrome.storage.sync) {
+    console.warn('chrome.storage.sync가 사용 불가능합니다');
+    return;
+  }
+
   chrome.storage.sync.get({
     hotkey: 'z',
     openMode: 'new-tab',
@@ -155,16 +161,18 @@ function initializeSettings() {
 }
 
 // 저장소 변경 감지 (실시간 설정 반영)
-chrome.storage.onChanged.addListener((changes, areaName) => {
-  if (areaName === 'sync') {
-    for (const key in changes) {
-      if (key in settings) {
-        settings[key] = changes[key].newValue;
+if (typeof chrome !== 'undefined' && chrome.storage) {
+  chrome.storage.onChanged.addListener((changes, areaName) => {
+    if (areaName === 'sync') {
+      for (const key in changes) {
+        if (key in settings) {
+          settings[key] = changes[key].newValue;
+        }
       }
+      console.log('Link Collector 설정 업데이트:', settings);
     }
-    console.log('Link Collector 설정 업데이트:', settings);
-  }
-});
+  });
+}
 
 // ====== 이벤트 리스너 ======
 document.addEventListener('keydown', (e) => {
@@ -467,6 +475,12 @@ function collectLinksInArea(x, y, width, height) {
 // ====== 링크 열기 ======
 function openSelectedLinks(linksArray) {
   if (linksArray.length === 0) {
+    return;
+  }
+
+  // chrome.runtime 존재 여부 확인
+  if (typeof chrome === 'undefined' || !chrome.runtime || !chrome.runtime.sendMessage) {
+    console.error('chrome.runtime이 사용 불가능합니다');
     return;
   }
 
