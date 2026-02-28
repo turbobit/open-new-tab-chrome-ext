@@ -1,0 +1,1 @@
+https://github.com/turbobit/open-new-tab-chrome-ext/releases/tag/1.1.0

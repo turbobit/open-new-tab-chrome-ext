@@ -1,0 +1,102 @@
+{
+  "extName": {
+    "message": "Link Collector"
+  },
+  "extDescription": {
+    "message": "Zキーでウェブページの範囲を選択し、その範囲のすべてのリンクを一括で開きます。"
+  },
+  "actionTitle": {
+    "message": "Link Collector 設定"
+  },
+  "pageTitle": {
+    "message": "Link Collector 設定"
+  },
+  "settingsTitle": {
+    "message": "⚙️ 設定"
+  },
+  "labelHotkey": {
+    "message": "ショートカットキー"
+  },
+  "hotkeyInputTitle": {
+    "message": "1文字だけ入力してください"
+  },
+  "hotkeyHelp": {
+    "message": "範囲選択を開始するキー"
+  },
+  "labelOpenMode": {
+    "message": "リンクの開き方"
+  },
+  "openModeNewTab": {
+    "message": "新しいタブで開く (フォーカス)"
+  },
+  "openModeBackground": {
+    "message": "新しいタブで開く (バックグラウンド)"
+  },
+  "openModeNewWindow": {
+    "message": "新しいウィンドウで開く"
+  },
+  "labelMaxTabs": {
+    "message": "一度に開く最大タブ数"
+  },
+  "maxTabsHelp": {
+    "message": "1〜50の数字を入力してください"
+  },
+  "labelBoxColor": {
+    "message": "選択ボックスの色"
+  },
+  "labelSameDomain": {
+    "message": "現在のドメインのリンクのみ開く"
+  },
+  "sameDomainHelp": {
+    "message": "他のドメインのリンクは除外されます"
+  },
+  "labelConfirmDialog": {
+    "message": "リンクを開く前に確認ダイアログを表示"
+  },
+  "confirmDialogHelp": {
+    "message": "オフにするとすぐにリンクが開きます"
+  },
+  "saveButton": {
+    "message": "💾 保存"
+  },
+  "savedStatus": {
+    "message": "保存しました！"
+  },
+  "linkCount": {
+    "message": "$COUNT$個",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "confirmMessage": {
+    "message": "$COUNT$個のリンクを$MODE$で開きますか？",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "10"
+      },
+      "mode": {
+        "content": "$2",
+        "example": "新しいタブ"
+      }
+    }
+  },
+  "confirmOpen": {
+    "message": "開く"
+  },
+  "confirmCancel": {
+    "message": "キャンセル"
+  },
+  "openModeNewTabShort": {
+    "message": "新しいタブ"
+  },
+  "openModeBackgroundTabShort": {
+    "message": "バックグラウンドタブ"
+  },
+  "openModeNewWindowShort": {
+    "message": "新しいウィンドウ"
+  }
+}

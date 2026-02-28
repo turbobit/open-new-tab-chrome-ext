@@ -1,0 +1,38 @@
+{
+  "manifest_version": 3,
+  "default_locale": "ko",
+  "name": "__MSG_extName__",
+  "version": "1.1.0",
+  "description": "__MSG_extDescription__",
+  "permissions": [
+    "storage",
+    "tabs",
+    "scripting",
+    "windows"
+  ],
+  "optional_host_permissions": [
+    "*://*/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "__MSG_actionTitle__",
+    "default_icons": {
+      "16": "icon-16x16.svg",
+      "32": "icon-32x32.svg",
+      "48": "icon-48x48.svg",
+      "128": "icon-128x128.svg"
+    }
+  },
+  "options_ui": {
+    "page": "popup.html",
+    "open_in_tab": true
+  },
+  "icons": {
+    "16": "icon-16x16.svg",
+    "32": "icon-32x32.svg",
+    "48": "icon-48x48.svg",
+    "128": "icon-128x128.svg"
+  }
+}

@@ -5,7 +5,10 @@
   "description": "Build scripts for Link Collector Chrome extension release packaging",
   "scripts": {
     "build": "node scripts/build-release.mjs",
-    "clean": "node scripts/build-release.mjs --clean"
+    "clean": "node scripts/build-release.mjs --clean",
+    "build:pages": "node scripts/build-release.mjs && node scripts/copy-to-docs.mjs",
+    "clean:pages": "node scripts/copy-to-docs.mjs --clean",
+    "build:publish": "npm run build:pages && node scripts/publish-docs.mjs"
   },
   "devDependencies": {
     "archiver": "^7.0.1"
