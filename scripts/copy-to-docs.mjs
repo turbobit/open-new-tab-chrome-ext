@@ -91,9 +91,24 @@ function copyDistToDocs() {
 `;
   writeFileSync(join(docsDir, "download.html"), downloadHtml, "utf8");
   writeFileSync(join(docsDir, "RELEASES_LINK.txt"), links.tag + "\n", "utf8");
+  // create index.html to avoid 404 on root URL; index redirects to download.html
+  const indexHtml = `<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="refresh" content="0;url=./download.html">
+    <title>Redirecting…</title>
+  </head>
+  <body>
+    <p>리디렉트 중입니다. <a href="./download.html">여기</a>를 클릭하세요.</p>
+  </body>
+</html>
+`;
+  writeFileSync(join(docsDir, "index.html"), indexHtml, "utf8");
 
   console.log("Copied dist/extension -> docs/");
   console.log("Created docs/download.html -> points to:", links.tag);
+  console.log("Created docs/index.html -> redirects to download.html");
 }
 
 function cleanDocs() {
