@@ -1,27 +1,39 @@
 #!/usr/bin/env node
-import { cpSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync, readdirSync, createWriteStream } from "node:fs";
 import { join, resolve } from "node:path";
 import { cwd } from "node:process";
 import { execFileSync } from "node:child_process";
+import archiver from "archiver";
 
 const rootDir = cwd();
 const distDir = resolve(rootDir, "dist");
 const extensionDir = resolve(distDir, "extension");
-const zipPath = resolve(distDir, "link-collector.zip");
+let zipPath = resolve(distDir, "link-collector.zip");
 
-const requiredFiles = [
+// 기본적으로 복사할 필수 파일 목록
+const baseRequiredFiles = [
   "manifest.json",
   "content.js",
   "background.js",
   "popup.html",
-  "popup.js",
-  "icon-16x16.png",
-  "icon-32x32.png",
-  "icon-48x48.png",
-  "icon-128x128.png"
+  "popup.js"
 ];
 
+// 루트 폴더에 있는 이미지(icon/*.png, .svg, .ico)를 자동으로 포함
+let imageFiles = [];
+try {
+  imageFiles = readdirSync(rootDir).filter((f) => /\.(png|svg|ico)$/i.test(f));
+} catch (e) {
+  imageFiles = [];
+}
+
+const requiredFiles = [...baseRequiredFiles, ...imageFiles];
+
+// 복사할 디렉터리 목록 (_locales는 필수, assets는 존재하면 포함)
 const requiredDirs = ["_locales"];
+if (existsSync(join(rootDir, "assets"))) {
+  requiredDirs.push("assets");
+}
 
 function removePath(path) {
   rmSync(path, { recursive: true, force: true });
@@ -56,31 +68,44 @@ function copyReleaseFiles() {
   }
 }
 
-function createZip() {
-  try {
-    execFileSync("zip", ["-q", "-r", zipPath, "."], {
-      cwd: extensionDir,
-      stdio: "inherit"
+async function createZip() {
+  return new Promise((resolve, reject) => {
+    const output = createWriteStream(zipPath);
+    const archive = archiver("zip", { zlib: { level: 9 } });
+
+    output.on("close", () => {
+      resolve();
     });
-  } catch (error) {
-    throw new Error(
-      "Failed to create zip archive. Make sure 'zip' is installed and available in PATH."
-    );
-  }
+
+    output.on("error", (err) => {
+      reject(err);
+    });
+
+    archive.on("error", (err) => {
+      reject(err);
+    });
+
+    archive.pipe(output);
+    // add all extensionDir contents at root of zip
+    archive.directory(extensionDir, false);
+    archive.finalize().catch(reject);
+  });
 }
 
-function build() {
+async function build() {
   const version = ensureManifestVersion();
+  // include version in zip filename
+  zipPath = resolve(distDir, `link-collector-${version}.zip`);
   removePath(distDir);
   mkdirSync(extensionDir, { recursive: true });
 
   copyReleaseFiles();
-  createZip();
+  await createZip();
 
   const metadata = {
     generatedAt: new Date().toISOString(),
     version,
-    artifact: "dist/link-collector.zip"
+    artifact: `dist/${zipPath.split(/[\\/]/).pop()}`
   };
 
   writeFileSync(join(distDir, "build-meta.json"), `${JSON.stringify(metadata, null, 2)}\n`, "utf8");
@@ -98,5 +123,8 @@ function clean() {
 if (process.argv.includes("--clean")) {
   clean();
 } else {
-  build();
+  build().catch((err) => {
+    console.error("Build failed:", err);
+    process.exit(1);
+  });
 }
