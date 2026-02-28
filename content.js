@@ -38,7 +38,78 @@
     if (typeof chrome === 'undefined' || !chrome.runtime || !chrome.runtime.sendMessage) {
       return;
     }
-    chrome.runtime.sendMessage({ type: 'REGISTER_ORIGIN', origin: CURRENT_ORIGIN });
+    chrome.runtime.sendMessage(
+      { type: 'REGISTER_ORIGIN', origin: CURRENT_ORIGIN },
+      (response) => {
+        handlePermissionResponse(response);
+      }
+    );
+  }
+
+  function handlePermissionResponse(response) {
+    if (!response) {
+      return;
+    }
+
+    if (response.success === false) {
+      showPermissionDeniedNotification(response.reason);
+    }
+  }
+
+  function showPermissionDeniedNotification(reason) {
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #ef4444;
+      color: white;
+      padding: 12px 16px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      z-index: 99999999;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      cursor: pointer;
+      animation: slideIn 0.3s ease-out;
+    `;
+
+    let message = '링크 수집기 권한이 필요합니다';
+    if (reason === 'user_denied') {
+      message = '링크 수집기 권한을 거부했습니다. 확장 아이콘을 클릭하여 다시 활성화할 수 있습니다.';
+    }
+
+    notification.textContent = message;
+    notification.onclick = () => notification.remove();
+
+    document.body.appendChild(notification);
+
+    // 5초 후 자동 삭제
+    setTimeout(() => {
+      if (notification.parentNode) {
+        notification.remove();
+      }
+    }, 5000);
+
+    // 애니메이션 스타일 추가
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes slideIn {
+        from {
+          transform: translateX(400px);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+    `;
+    if (!document.querySelector('style[data-link-collector]')) {
+      style.setAttribute('data-link-collector', 'true');
+      document.head.appendChild(style);
+    }
   }
 
   // ====== 설정 변수 ======

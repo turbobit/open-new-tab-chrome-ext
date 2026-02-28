@@ -32,9 +32,15 @@ function ensureContentScriptInjected(tabId, origin) {
     return;
   }
 
-  const pattern = getOriginPattern(origin);
-  chrome.permissions.contains({ origins: [pattern] }, (hasPermission) => {
+  // 전체 호스트 권한 확인
+  chrome.permissions.contains({ origins: ['*://*/*'] }, (hasPermission) => {
     if (!hasPermission) {
+      return;
+    }
+
+    // 특정 페이지는 scripting이 불가능하므로 체크
+    if (!canScriptPage(origin)) {
+      console.debug('scripting 불가능한 페이지:', origin);
       return;
     }
 
@@ -44,9 +50,29 @@ function ensureContentScriptInjected(tabId, origin) {
         files: ['content.js']
       })
       .catch((error) => {
-        console.error('content.js 삽입 실패', error);
+        // 특수 페이지(예: 확장 프로그램 갤러리)는 무시
+        if (error.message?.includes('cannot be scripted') ||
+            error.message?.includes('Unknown host')) {
+          console.debug('content.js 주입 불가능:', origin, error.message);
+        } else {
+          console.error('content.js 삽입 실패:', error);
+        }
       });
   });
+}
+
+function canScriptPage(origin) {
+  // Chrome 시스템 페이지와 특수 URL은 scripting 불가능
+  const unsafeOrigins = [
+    'chrome://',
+    'about:',
+    'chrome-extension://',
+    'file://',
+    'data:',
+    'blob:'
+  ];
+
+  return !unsafeOrigins.some(prefix => origin.startsWith(prefix));
 }
 
 function refreshBadge(tabId, origin) {
@@ -58,9 +84,17 @@ function refreshBadge(tabId, origin) {
   chrome.storage.sync.get({ [ALLOWED_ORIGINS_KEY]: [] }, (stored) => {
     const allowedOrigins = stored[ALLOWED_ORIGINS_KEY];
     if (allowedOrigins.includes(origin)) {
+      // 활성화된 호스트
       setBadge(tabId, BADGE_TEXT_ALLOWED, BADGE_COLOR_ALLOWED);
-      ensureContentScriptInjected(tabId, origin);
+
+      // 권한이 있으면 content script 주입
+      chrome.permissions.contains({ origins: ['*://*/*'] }, (hasPermission) => {
+        if (hasPermission) {
+          ensureContentScriptInjected(tabId, origin);
+        }
+      });
     } else {
+      // 비활성화됨
       clearBadge(tabId);
     }
   });
@@ -72,22 +106,23 @@ function getOriginPattern(origin) {
 
 function ensureOriginPermission(origin, onGranted, onDenied) {
   if (!origin) {
-    onDenied?.();
+    onDenied?.({ reason: 'invalid_origin' });
     return;
   }
 
-  const pattern = getOriginPattern(origin);
-  chrome.permissions.contains({ origins: [pattern] }, (hasPermission) => {
+  // Manifest V3에서는 optional_host_permissions에 선언된 패턴과 정확히 일치해야 함
+  chrome.permissions.contains({ origins: ['*://*/*'] }, (hasPermission) => {
     if (hasPermission) {
       onGranted();
       return;
     }
 
-    chrome.permissions.request({ origins: [pattern] }, (granted) => {
+    // 전체 호스트 권한 요청 (한 번만 필요)
+    chrome.permissions.request({ origins: ['*://*/*'] }, (granted) => {
       if (granted) {
         onGranted();
       } else {
-        onDenied?.();
+        onDenied?.({ reason: 'user_denied', origin });
       }
     });
   });
@@ -95,7 +130,7 @@ function ensureOriginPermission(origin, onGranted, onDenied) {
 
 function markOriginAllowed(origin, callback) {
   if (!origin) {
-    callback([]);
+    callback({ success: false, reason: 'invalid_origin' });
     return;
   }
 
@@ -105,20 +140,18 @@ function markOriginAllowed(origin, callback) {
       chrome.storage.sync.get({ [ALLOWED_ORIGINS_KEY]: [] }, (stored) => {
         const allowedOrigins = stored[ALLOWED_ORIGINS_KEY];
         if (allowedOrigins.includes(origin)) {
-          callback(allowedOrigins);
+          callback({ success: true, origins: allowedOrigins });
           return;
         }
 
         const nextOrigins = [...allowedOrigins, origin];
         chrome.storage.sync.set({ [ALLOWED_ORIGINS_KEY]: nextOrigins }, () => {
-          callback(nextOrigins);
+          callback({ success: true, origins: nextOrigins });
         });
       });
     },
-    () => {
-      if (callback) {
-        callback([]);
-      }
+    (error) => {
+      callback({ success: false, reason: error?.reason || 'unknown', origin });
     }
   );
 }
@@ -175,15 +208,15 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.type === 'REGISTER_ORIGIN') {
     const { origin } = request;
     if (!origin) {
-      sendResponse({ success: false });
+      sendResponse({ success: false, reason: 'invalid_origin' });
       return false;
     }
 
-    markOriginAllowed(origin, () => {
+    markOriginAllowed(origin, (result) => {
       if (sender?.tab?.id) {
         refreshBadge(sender.tab.id, origin);
       }
-      sendResponse({ success: true });
+      sendResponse(result);
     });
     return true;
   }
