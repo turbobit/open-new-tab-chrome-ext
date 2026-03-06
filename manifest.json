@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "default_locale": "ko",
   "name": "__MSG_extName__",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "__MSG_extDescription__",
   "permissions": [
     "storage",
@@ -19,10 +19,10 @@
   "action": {
     "default_title": "__MSG_actionTitle__",
     "default_icons": {
-      "16": "icon-16x16.svg",
-      "32": "icon-32x32.svg",
-      "48": "icon-48x48.svg",
-      "128": "icon-128x128.svg"
+      "16": "icon-16x16.png",
+      "32": "icon-32x32.png",
+      "48": "icon-48x48.png",
+      "128": "icon-128x128.png"
     }
   },
   "options_ui": {
@@ -30,9 +30,9 @@
     "open_in_tab": true
   },
   "icons": {
-    "16": "icon-16x16.svg",
-    "32": "icon-32x32.svg",
-    "48": "icon-48x48.svg",
-    "128": "icon-128x128.svg"
+    "16": "icon-16x16.png",
+    "32": "icon-32x32.png",
+    "48": "icon-48x48.png",
+    "128": "icon-128x128.png"
   }
 }

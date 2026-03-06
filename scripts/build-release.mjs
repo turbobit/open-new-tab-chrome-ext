@@ -19,10 +19,10 @@ const baseRequiredFiles = [
   "popup.js"
 ];
 
-// 루트 폴더에 있는 이미지(icon/*.png, .svg, .ico)를 자동으로 포함
+// 루트 폴더의 릴리스용 이미지만 포함한다. SVG 아이콘은 제외한다.
 let imageFiles = [];
 try {
-  imageFiles = readdirSync(rootDir).filter((f) => /\.(png|svg|ico)$/i.test(f));
+  imageFiles = readdirSync(rootDir).filter((f) => /\.(png|ico)$/i.test(f));
 } catch (e) {
   imageFiles = [];
 }
